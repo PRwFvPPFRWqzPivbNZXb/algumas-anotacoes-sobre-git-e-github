@@ -1,3 +1,126 @@
-Link para o download do Git: https://git-scm.com/downloads
+1. Link para o download do Git: https://git-scm.com/downloads
 
-O Git Bash é um terminal extendido para otimizar o uso do Git.
+2. O Git Bash é um terminal extendido para otimizar o uso do Git.
+
+3. Passos que fiz para criar minha chave SSH num note com Windows 11 (para configurar nossa máquina como uma máquina confiável para o Github):
+
+3.1 Vão ser criadas uma chave pública e uma privada. A chave pública é a que nós cadastramos no Github. A partir de quando fizermos isso, o Github vai conhecer a nossa máquina; assim poderemos mandar nossos códigos para o repositório sem nem precisar colocar senha.
+
+3.2 Loga no site do github.com; depois clica no ícone da sua imagem e vai na opção settings. Feito isso, vai na opção SSH e GPG Keys. Depois, clica no botão New SSH Key. Então, veremos a seguir, como preencher os campos Title e Key.
+
+3.3 Entra no Git Bash. Digita:
+
+ssh-keygen -t ed25519 -C seuemail@seuemail.com
+
+Para fins práticos, substitui seuemail@seuemail.com pelo seu e-mail que você utiliza na conta do Github.
+
+O comando vai informar onde serão guardadas as duas chaves. Se você concorda com o caminho escolhido, basta dar ENTER. Ele vai perguntar se você quer criar com senha, então basta dar ENTER para não criar senha. Pronto, será criado os pares no caminho /c/Users/seuusuário/.ssh/; onde seuusuário é igual ao usuário da sua máquina.
+
+Entra na pasta criada, por exemplo, digitando:
+
+cd /c/Users/seuusuário/.ssh/
+
+Dando o comando ls, vai ver que ali estão os arquivos id_ed25519 e id_ed25519.pub.
+
+Para ver a chave pública, então, basta executar o seguinte comando:
+
+cat id_ed25519.pub 
+
+Então podemos copiar essa chave pública para expor lá no site do Github.
+
+No campo key, mencionado no item 3.2, cola a chave pública acima mencionada.
+
+No campo Title, coloca algo que facilite lembrar qual é a máquina. Eu coloquei, por exemplo, Note Del W11.
+
+3.4 Agora inicializa o ssh-agent para rodar em pano de fundo, através do seguinte comando:
+
+eval $(ssh-agent -s)  
+
+3.5 Agora, vamos entregar nossa chave privada para o agente, executando o seguinte comando:
+
+ssh-add id_ed25519
+
+4. CLONANDO UM REPOSITÓRIO COM CRIPTOGRAFIA SSH
+
+Feito o passo 3, ao entrar em um repositório, clica no drop down <> Code e vai no opção SSH para copiar o endereço ali informado. Aí basta executar o comando
+
+git clone "endereço copiado na opção SSH"
+
+Responder yes para a pergunta fingerprint.
+
+5. INICIAR O GIT, INICIAR O VERSIONAMENTO, CRIAR UM COMMIT:
+
+5.1 INICIAR O GIT:
+
+Supõe que criei uma pasta workspace na raiz do drive C: e dentro da pasta workspace eu crio a pasta livro-receitas. Entra nessa pasta livro-receitas pelo Git Bash. Feito isso, execute o comando:
+
+git init
+
+Se der ls, não vai enxergar, mas se der ls -a vai ver que dentro do diretório livro-receitas, agora há uma pasta oculta chamada .git.
+
+Assim, o Git começa a considerar a pasta livro-receitas como um repósitório; pois, através dessa pasta oculta .git/ ele faz todo o controle e gerenciamento do versionamento.
+
+5.2 PREPARANDO OS ARQUIVOS PARA SEREM EMPURRADOS PARA O REPOSITÓRIO ONLINE
+
+5.2.1 SE FOR A PRIMEIRA VEZ:
+
+Se for a primeira vez que estiver usando o Git na máquina, antes de criar qualquer arquivo no repositório é preciso fazer algumas poucas configurações que podem ser feitas por repositório, mais, para fins práticos, nosso exemplo será com uma configuração global:
+
+git config --global user.email "seuemail@seuemail.com"
+
+Onde seuemail@seuemail.com é o e-mail da sua conta no Github. Também executar o seguinte:
+
+git config --global usar.name "nome"
+
+Onde "nome" é o seu nome de usuário no Github.
+
+Observação: para modificar os parâmetros user.email e user.name; usa-se os comandos "git config --global --unset usar.email" e "git config --global --unset usar.name" antes de se executar o passos anteriores. Para ver as configurações, se usa o comando "git config --list".
+
+Depois de colocar ou aterar arquivos dentro da pasta do repositório, executar seguinte comando para deixar os arquivos inclusos ou alterados prontos para serem enviados ao repositório online:
+
+git add "nome"
+
+Sendo que "nome" pode ser nome do arquivo ou pasta incluso ou modificado. Outra forma é no lugar de "nome" colocar * ou . para que o Git prepare todas as alterações que foram feitas.
+
+Feito o passo 5.2, basta executar o seguinte comando:
+
+git commit -m "texto"
+
+Sendo "texto" algo de significância para a nova versão que está será empurrada.
+
+Se tudo deu certo, do git commit, o comando git status retorna working tree clean; o que quer dizer que todas as modificações no repositório já foram commitadas.
+
+5.4 EMPURRANDO OS ARQUIVOS PARA O REPOSITÓRIO ONLINE
+
+Logado no site do Github, se ainda não criou, tem que criar o repositório lá clicando na figura do perfil do canto superior direito, clica na opção your repositories. Feito isso, clica no botão new. No campo repository name vai o nome da pasta que você criou para o repositório. No nosso exemplo, seria livro-receitas. Depois verifica e seleciona ou não as outras opções, por exemplo, se será público ou privado. Por fim, clica no botão create repository.
+
+Uma coisa que é prática é já aproveitar para criar o arquivo markdown README.md; porque no próprio site é muito fácil de editar e visualizar esse tipo de arquivo; arquivos de texto; etc.
+
+Buenas, mas, voltando ao objetivo do item 5.4, ao clicar no botão create repository, pega o endereço do repositório, por exemplo, https://github.com/username/livro-receitas.git; onde username é o nome do seu usuário no Git.
+
+Então, de volta ao Git Bash, executa o comando para criar o apelido (alias) origin:
+
+git remote add origin https://github.com/username/livro-receitas.git
+
+Observação: se você escreve git remote -v e aparece esse endereço no apelido origin, não precisa executar o comando acima.
+
+E, depois, executa o seguinte comando:
+
+git push origin master
+
+Pronto; todas as alterações foram empurradas, ou seja, foram disponibilizadas, no repositório online.
+
+5.5 RESOLVENDO CONFLITOS:
+
+Quando mais de uma pessoa do time edita o mesmo arquivo e uma mesma linha é alterada, dá conflito informando em qual, ou quais arquivos isso está ocorrendo. Ou seja: o comando git push é rejeitado. Dessa forma, como o comando empurrar (push) não está dando certo, vamos puxar (pull) essa última versão que está no Github para conseguir resolver a questão alterando, se necessário, o arquivo gerador do conflito. O comando a executar, portanto, é:
+
+git pull origin master
+
+Feitas as alterações pertinentes, basta, então, seguir os passos desde o 5.2.
+
+ 
+
+
+
+
+
