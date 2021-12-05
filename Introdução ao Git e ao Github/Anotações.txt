@@ -110,11 +110,15 @@ git push origin master
 
 Pronto; todas as alterações foram empurradas, ou seja, foram disponibilizadas, no repositório online.
 
+Observação: se no Git Bash você ver que é main tem que trocar no comando o termo master pelo termo main.
+
 5.5 RESOLVENDO CONFLITOS:
 
 Quando mais de uma pessoa do time edita o mesmo arquivo e uma mesma linha é alterada, dá conflito informando em qual, ou quais arquivos isso está ocorrendo. Ou seja: o comando git push é rejeitado. Dessa forma, como o comando empurrar (push) não está dando certo, vamos puxar (pull) essa última versão que está no Github para conseguir resolver a questão alterando, se necessário, o arquivo gerador do conflito. O comando a executar, portanto, é:
 
 git pull origin master
+
+Observação: se no Git Bash você ver que é main tem que trocar no comando o termo master pelo termo main.
 
 Feitas as alterações pertinentes, basta, então, seguir os passos desde o 5.2.
 
